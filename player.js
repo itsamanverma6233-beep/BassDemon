@@ -4,24 +4,30 @@ const fs = require("fs");
 const path = "./songs";
 
 let childProcess = null;
-
-// Store current song number
 let currentSong = null;
+
 
 const songs = fs.readdirSync(path).filter((song) => {
   return song.endsWith(".mp3");
 });
 
 
-console.log("\n🎵 Welcome to Songs App 🎵\n");
+console.log("\n🎵 =============================");
+console.log("       TERMINAL MUSIC PLAYER");
+console.log("============================= 🎵\n");
+
 
 for (let i = 0; i < songs.length; i++) {
   console.log(`${i + 1}. ${songs[i].split(".")[0]}`);
 }
 
+
 console.log("\nCommands:");
-console.log("Enter a number → Select song");
-console.log("play → Play current song");
+console.log("Enter number → Select song");
+console.log("play → Play");
+console.log("pause → Pause");
+
+console.log("\nEnter command:");
 
 
 process.stdin.setEncoding("utf-8");
@@ -31,7 +37,7 @@ process.stdin.on("data", (input) => {
   const userInput = input.trim();
 
 
-  // If user types play
+  // PLAY
   if (userInput === "play") {
 
     if (currentSong === null) {
@@ -40,11 +46,26 @@ process.stdin.on("data", (input) => {
     }
 
     playSong(currentSong);
+
     return;
   }
 
 
-  // Otherwise convert input into number
+  // PAUSE
+  if (userInput === "pause") {
+
+    if (childProcess) {
+      childProcess.kill("SIGSTOP");
+      console.log("⏸️ Song paused");
+    } else {
+      console.log("❌ No song is playing");
+    }
+
+    return;
+  }
+
+
+  // SONG NUMBER
   const songNumber = Number(userInput);
 
   playSong(songNumber);
@@ -53,15 +74,17 @@ process.stdin.on("data", (input) => {
 
 function playSong(songNumber) {
 
-  if (songNumber < 1 || songNumber > songs.length || isNaN(songNumber)) {
+  if (
+    isNaN(songNumber) ||
+    songNumber < 1 ||
+    songNumber > songs.length
+  ) {
     console.log("❌ Invalid song number");
     return;
   }
 
 
-  // Remember current song
   currentSong = songNumber;
-
 
   const song = songs[songNumber - 1];
 
