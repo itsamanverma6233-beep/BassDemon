@@ -29,6 +29,7 @@ console.log("pause → Pause");
 console.log("resume → Resume");
 console.log("stop → Stop");
 console.log("next → Next song");
+console.log("previous → Previous song");
 
 console.log("\nEnter command:");
 
@@ -117,6 +118,29 @@ process.stdin.on("data", (input) => {
 
 
     currentSong = currentSong + 1;
+
+    playSong(currentSong);
+
+    return;
+  }
+
+
+  // PREVIOUS
+  if (userInput === "previous") {
+
+    if (currentSong === null) {
+      console.log("❌ Select a song first");
+      return;
+    }
+
+
+    if (currentSong === 1) {
+      console.log("❌ This is the first song");
+      return;
+    }
+
+
+    currentSong = currentSong - 1;
 
     playSong(currentSong);
 
