@@ -23,9 +23,12 @@ for (let i = 0; i < songs.length; i++) {
 
 
 console.log("\nCommands:");
-console.log("Enter number → Select song");
-console.log("play → Play");
+console.log("number → Play song");
+console.log("play → Play current song");
 console.log("pause → Pause");
+console.log("resume → Resume");
+console.log("stop → Stop");
+console.log("next → Next song");
 
 console.log("\nEnter command:");
 
@@ -46,7 +49,6 @@ process.stdin.on("data", (input) => {
     }
 
     playSong(currentSong);
-
     return;
   }
 
@@ -60,6 +62,63 @@ process.stdin.on("data", (input) => {
     } else {
       console.log("❌ No song is playing");
     }
+
+    return;
+  }
+
+
+  // RESUME
+  if (userInput === "resume") {
+
+    if (childProcess) {
+      childProcess.kill("SIGCONT");
+      console.log("▶️ Song resumed");
+    } else {
+      console.log("❌ No song is playing");
+    }
+
+    return;
+  }
+
+
+  // STOP
+  if (userInput === "stop") {
+
+    if (childProcess) {
+
+      childProcess.kill();
+      childProcess = null;
+
+      console.log("⏹️ Song stopped");
+
+    } else {
+
+      console.log("❌ No song is playing");
+
+    }
+
+    return;
+  }
+
+
+  // NEXT
+  if (userInput === "next") {
+
+    if (currentSong === null) {
+      console.log("❌ Select a song first");
+      return;
+    }
+
+
+    if (currentSong === songs.length) {
+      console.log("❌ This is the last song");
+      return;
+    }
+
+
+    currentSong = currentSong + 1;
+
+    playSong(currentSong);
 
     return;
   }
